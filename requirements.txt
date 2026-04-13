@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pydantic-settings
+pandas
+scikit-learn
+joblib
+numpy
+python-dotenv
+aiofiles
