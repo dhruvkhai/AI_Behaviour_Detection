@@ -9,3 +9,10 @@ joblib
 numpy
 python-dotenv
 aiofiles
+xgboost
+torch
+torchvision
+torchaudio
+scipy
+matplotlib
+seaborn

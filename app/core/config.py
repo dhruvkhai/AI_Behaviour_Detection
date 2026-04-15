@@ -3,7 +3,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Cow Monitoring System"
-    DATABASE_URL: str = "sqlite:///./data/cow_monitor.db"
+    DATABASE_URL: str = "sqlite:///./data/cow_monitor.db"  
     API_V1_STR: str = "/api/v1"
     
     # AI Pipeline Config
