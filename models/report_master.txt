@@ -1,0 +1,45 @@
+Master Sensor Fusion Model Report
+===============================
+Accuracy: 0.9682
+Sample Size: 86400
+Feature Count: 72
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3027
+           1       0.75      0.74      0.74       167
+           2       0.98      0.98      0.98      3626
+           3       0.83      0.57      0.67       743
+           4       0.83      0.94      0.88      1729
+           5       1.00      0.98      0.99        86
+           6       0.93      0.90      0.91       160
+           7       1.00      1.00      1.00      7742
+
+    accuracy                           0.97     17280
+   macro avg       0.91      0.89      0.90     17280
+weighted avg       0.97      0.97      0.97     17280
+
+
+Top Feature Importance:
+                     feature  importance
+55               thi_THI_max    0.209060
+67        uwb_coord_z_cm_max    0.112456
+68           weather_UV_mean    0.090587
+62        uwb_coord_y_cm_min    0.077692
+60       uwb_coord_y_cm_mean    0.060964
+58        uwb_coord_x_cm_min    0.054611
+50      thi_humidity_per_min    0.036707
+64       uwb_coord_z_cm_mean    0.035788
+59        uwb_coord_x_cm_max    0.034402
+47     thi_temperature_F_max    0.030626
+56       uwb_coord_x_cm_mean    0.027967
+46     thi_temperature_F_min    0.025056
+66        uwb_coord_z_cm_min    0.016853
+51      thi_humidity_per_max    0.016330
+27     cbt_temperature_C_max    0.015238
+54               thi_THI_min    0.014403
+36  milk_milk_weight_kg_mean    0.012683
+57        uwb_coord_x_cm_std    0.010688
+63        uwb_coord_y_cm_max    0.010433
+4     immu_accel_y_mps2_mean    0.007591
