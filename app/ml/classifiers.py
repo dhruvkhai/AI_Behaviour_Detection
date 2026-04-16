@@ -26,6 +26,32 @@ class XGBoostClassifier:
     def predict_proba(self, X):
         return self.model.predict_proba(X)
 
+class MasterFusionClassifier:
+    """
+    XGBoost classifier for Master Sensor Fusion, loaded from joblib.
+    """
+    def __init__(self, model_path: str = "models/behavior_master.joblib"):
+        self.model_path = model_path
+        self.model = None
+        if os.path.exists(self.model_path):
+            self.model = joblib.load(self.model_path)
+            print(f"Master Model loaded from {self.model_path}")
+
+    def predict(self, X):
+        if self.model is None:
+            raise ValueError("Master Model not loaded. Train it first.")
+        # Ensure X is a 2D array
+        if len(X.shape) == 1:
+            X = X.reshape(1, -1)
+        return self.model.predict(X)
+
+    def predict_proba(self, X):
+        if self.model is None:
+            raise ValueError("Master Model not loaded.")
+        if len(X.shape) == 1:
+            X = X.reshape(1, -1)
+        return self.model.predict_proba(X)
+
 class CNNBiLSTMModel(nn.Module):
     """
     PyTorch Implementation of 1D CNN + BiLSTM for time-series sensor data.
