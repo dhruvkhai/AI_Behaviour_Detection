@@ -121,7 +121,8 @@ def train_master_model(
 
     # Save label encoder and feature names for inference
     with open(ENCODER_PATH, "w") as f:
-        json.dump(loader.label_encoder, f, indent=2)
+        safe_encoder = {str(k): int(v) for k, v in loader.label_encoder.items()}
+        json.dump(safe_encoder, f, indent=2)
     print(f"      Label encoder saved → {ENCODER_PATH}")
     print(f"      Class mapping: {loader.label_encoder}")
 
@@ -195,6 +196,7 @@ def train_master_model(
         min_child_weight=5,
         gamma=0.1,
         tree_method="hist",       # Efficient histogram-based for large data
+        device="cuda",            # Force hardware acceleration on RTX 4070
         eval_metric="mlogloss",
         random_state=random_state,
         n_jobs=-1,

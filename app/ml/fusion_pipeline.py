@@ -146,7 +146,7 @@ class MasterDataLoader:
                 num_cols = df.select_dtypes(include=[np.number]).columns.tolist()
                 return {"type": "static", "data": df[num_cols].mean().to_dict()}
 
-        df["timestamp"] = pd.to_numeric(df["timestamp"], errors="coerce")
+        df["timestamp"] = pd.to_numeric(df["timestamp"], errors="coerce").astype("float64")
         df = df.dropna(subset=["timestamp"]).sort_values("timestamp").reset_index(drop=True)
 
         if df.empty:
@@ -174,13 +174,9 @@ class MasterDataLoader:
             feats_df[f"{prefix}_std"] = roll.std()
             feats_df[f"{prefix}_min"] = roll.min()
             feats_df[f"{prefix}_max"] = roll.max()
-            # Skew / kurtosis require at least 3 points
-            feats_df[f"{prefix}_skew"] = (
-                roll.apply(lambda x: skew(x) if len(x) >= 3 else 0.0, raw=True)
-            )
-            feats_df[f"{prefix}_kurt"] = (
-                roll.apply(lambda x: kurtosis(x) if len(x) >= 3 else 0.0, raw=True)
-            )
+            # Use native C-vectorized pandas rolling for a ~1000x speedup
+            feats_df[f"{prefix}_skew"] = roll.skew().fillna(0.0)
+            feats_df[f"{prefix}_kurt"] = roll.kurt().fillna(0.0)
 
         return {"type": "dynamic", "data": feats_df}
 
@@ -238,7 +234,7 @@ class MasterDataLoader:
 
         labels_df["timestamp"] = pd.to_numeric(
             labels_df["timestamp"], errors="coerce"
-        )
+        ).astype("float64")
         labels_df = labels_df.dropna(subset=["timestamp"]).sort_values("timestamp")
 
         # Encode string behavior labels → integer class IDs
