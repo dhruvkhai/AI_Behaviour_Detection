@@ -208,8 +208,8 @@ class MasterDataLoader:
         self.feature_names = [c for c in final_df.columns if c not in meta_cols]
 
         print(
-            f"[MasterDataLoader] Fused {len(all_aligned)} sessions → "
-            f"{final_df.shape[0]} rows × {len(self.feature_names)} features"
+            f"[MasterDataLoader] Fused {len(all_aligned)} sessions -> "
+            f"{final_df.shape[0]} rows x {len(self.feature_names)} features"
         )
         return final_df
 
@@ -237,7 +237,7 @@ class MasterDataLoader:
         ).astype("float64")
         labels_df = labels_df.dropna(subset=["timestamp"]).sort_values("timestamp")
 
-        # Encode string behavior labels → integer class IDs
+        # Encode string behavior labels -> integer class IDs
         labels_df["behavior"] = self._encode_labels(labels_df["behavior"])
 
         fused_df = labels_df.copy()
@@ -273,7 +273,7 @@ class MasterDataLoader:
         fused_df["_date"] = date_suffix.replace(".csv", "")
 
         print(
-            f"  Merged {sensors_ok}/{len(self.sensor_configs)} sensors → "
+            f"  Merged {sensors_ok}/{len(self.sensor_configs)} sensors -> "
             f"{fused_df.shape[0]} rows, {fused_df.shape[1]} cols"
         )
         return fused_df
