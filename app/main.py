@@ -1,9 +1,11 @@
+import os
 from fastapi import FastAPI
 from app.api.endpoints import ingest
 from app.core.config import settings
 from app.core.database import engine, Base
 
 # Initialize Database
+os.makedirs("./data", exist_ok=True)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
