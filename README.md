@@ -1,57 +1,68 @@
 # Cow Behavior Detection System 🐄
 
-A comprehensive AI-powered system for monitoring cow health and behavior using wearable sensor data (IMU/Acceleration).
+A comprehensive AI-powered system for monitoring cow health and behavior using multi-modal sensor fusion (IMU, CBT, Pressure, UWB, Weather, Milk, THI).
 
 ## 🚀 Overview
 
-This project implements a multi-stage behavior detection pipeline:
-1.  **Anomaly Detection (Isolation Forest)**: Identifies unusual or potentially unhealthy behavior patterns (e.g., illness, stress) without requiring labels.
-2.  **Behavior Classification (CNN-BiLSTM & XGBoost)**: Classifies specific behaviors like Eating, Ruminating, Walking, and Lethargy.
-3.  **Rule Engine**: Converts ML predictions into actionable alerts in the system.
-4.  **Post-Processing**: Uses majority voting and temporal smoothing to ensure stable and reliable output.
+This project implements a multi-stage behavior detection pipeline that leverages early sensor fusion and hardware-accelerated machine learning:
+1.  **Sensor Fusion Pipeline**: Aligns asynchronous multi-sensor streams at 1Hz, dynamically computes rolling statistics, and gracefully degrades when sensors go offline.
+2.  **Master Decision Tree (XGBoost)**: Fast, memory-efficient sensor fusion model handling missing data natively.
+3.  **Deep Learning Sequence Model (1D CNN + BiLSTM)**: Accurately classifies temporal behavior sequences using 45-second sliding windows.
+4.  **Anomaly Detection (Isolation Forest)**: Identifies unusual or potentially unhealthy behavior patterns without requiring labels.
 
 ## 🛠 Model Architectures
 
-### 1. 1D CNN + BiLSTM
-- **CNN**: Extracts spatial features and frequency patterns from raw 3-axis acceleration data.
-- **BiLSTM**: Captures long-term temporal dependencies in behavior sequences.
-- **Best for**: Raw time-series data where high accuracy is needed.
+### 1. 1D CNN + BiLSTM (PyTorch)
+- **Architecture**: A deep network that groups temporal inputs into 45-second overlapping sequence tensors.
+- **CNN**: Extracts spatial features and frequency patterns from the fused multi-sensor data matrix.
+- **BiLSTM**: Captures long-term temporal dependencies in complex behavior sequences (e.g., grazing to resting transitions).
+- **Scale**: Hardware-accelerated training targeting NVIDIA RTX 4070 (CUDA) and sequence mini-batches.
 
-### 2. XGBoost (Classical Baseline)
-- Trained on statistical features (Mean, Std, Skewness, Kurtosis, RMS) extracted from sliding windows.
-- **Best for**: Interpretable results and fast inference on lower-power devices.
-
-### 3. Isolation Forest
-- Used for unsupervised anomaly detection.
-- Analyzes statistical distributions to flag data points that deviate from 'normal' behavior.
+### 2. Master Sensor Fusion Model (XGBoost)
+- **Features**: Trained on comprehensive statistical features (Mean, Std, Min, Max, Skewness, Kurtosis) extracted synchronously.
+- **Memory Efficiency**: Utilizes stratified date-cow sampling for large sparse datasets (~10GB) and histogram-based tree methods (`tree_method='hist'`).
+- **Robustness**: Inherently resilient to missing sensor streams (e.g., UWB disconnects) via XGBoost's optimal missing-value splitting.
 
 ## 📦 Getting Started
 
 ### Prerequisites
 - Docker & Docker Compose
-- Python 3.10+ (for local development)
+- Python 3.12.9+ (for local development)
+- NVIDIA CUDA Toolkit & cuDNN (optional, for hardware-accelerated training)
 
-### Running with Docker
+### Running with Docker (API)
+This Docker configuration deploys the lightweight FastAPI backend for inference:
 1.  **Build and Start**:
     ```bash
     docker-compose up --build
     ```
 2.  The API will be available at `http://localhost:8000`.
-3.  Access interactive documentation at `http://localhost:8000/docs`.
+3.  Access interactive API documentation at `http://localhost:8000/docs`.
 
-### Training Models
-1.  Extract your dataset into a folder (e.g., `sensor_data_extracted`).
-2.  Run the training script:
-    ```bash
-    python train_models.py
-    ```
-    *Note: The script includes feature extraction and windowing logic ready for your CSV data.*
+### Training Models Locally
+
+1. Place your extracted sensor CSV/Excel files into your data root mapped by `app.ml.sensor_configs`.
+2. Ensure you have the required dependencies (`pip install -r requirements.txt`).
+
+**Train the PyTorch Deep Learning Model:**
+```bash
+python train_dl_model.py
+```
+*Slices raw matrices into PyTorch sequence tensors and executes backpropagation on the GPU.*
+
+**Train the XGBoost Master Fusion Model:**
+```bash
+python train_master_model.py --max-sessions 50
+```
+*Executes stratified sampling, trains the histogram-based model, and generates a feature importance report along with a robustness drop test.*
 
 ## 📂 Project Structure
-- `app/ml/`: Core ML logic (Anomaly detection, Classifiers, Pipeline).
-- `app/models/`: Database and Pydantic schemas.
-- `train_models.py`: Model training and feature extraction entry point.
-- `Dockerfile` & `docker-compose.yml`: Containerization logic.
+- `app/ml/`: Core machine learning logic (`fusion_pipeline.py`, classifiers, configs).
+- `app/api/`: FastAPI endpoint routers.
+- `models/`: Exported model binaries (`.joblib`, `.pth`), encoders, and performance reports.
+- `train_dl_model.py`: Deep learning training pipeline.
+- `train_master_model.py`: Master sensor fusion training script.
+- `Dockerfile` & `docker-compose.yml`: API Containerization stack.
 
 ## 🛡 License
 MIT License

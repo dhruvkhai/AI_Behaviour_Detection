@@ -1,6 +1,6 @@
 import os
 from fastapi import FastAPI
-from app.api.endpoints import ingest
+from app.api.endpoints import ingest, predict
 from app.core.config import settings
 from app.core.database import engine, Base
 
@@ -16,6 +16,7 @@ app = FastAPI(
 
 # Include Routers
 app.include_router(ingest.router, prefix=settings.API_V1_STR, tags=["Ingestion"])
+app.include_router(predict.router, prefix=settings.API_V1_STR, tags=["Real-time ML Model Inference"])
 
 @app.get("/")
 async def health_check():
