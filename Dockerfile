@@ -1,4 +1,4 @@
-# Use Python 3.10 slim as base image
+# Use Python 3.12.9 slim as base image for the API
 FROM python:3.12.9-slim
 
 # Set working directory
@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
+# Note: For GPU support inside Docker (e.g., for model training), 
+# use a CUDA base image like nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
