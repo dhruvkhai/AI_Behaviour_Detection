@@ -1,7 +1,7 @@
 # Sensor configurations for the AI Behaviour Detection project
 import os
 
-DATA_ROOT = os.environ.get("SENSOR_DATA_ROOT", r"C:\Users\DELL\sensor_data\sensor_data")
+DATA_ROOT = os.environ.get("SENSOR_DATA_ROOT", r"C:\Users\dhruv\sensor_data\sensor_data")
 
 SENSOR_CONFIGS = {
     "immu": {

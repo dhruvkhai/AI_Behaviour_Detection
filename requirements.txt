@@ -11,6 +11,7 @@ numpy
 python-dotenv
 aiofiles
 xgboost
+# PyTorch (may install CPU build on Windows). For GPU training see requirements-gpu.txt
 torch
 torchvision
 torchaudio

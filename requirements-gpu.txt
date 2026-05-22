@@ -1,0 +1,12 @@
+# GPU training (RTX 3050 Ti / CUDA). Install AFTER base requirements:
+#
+#   pip install -r requirements.txt
+#   pip install -r requirements-gpu.txt
+#
+# Or one line:
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
+--extra-index-url https://download.pytorch.org/whl/cu124
+torch
+torchvision
+torchaudio
