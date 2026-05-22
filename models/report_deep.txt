@@ -1,0 +1,22 @@
+Deep CNN-BiLSTM Model
+==================================================
+Sessions : 16
+Epochs   : 30
+Features : 50
+Accuracy (overall)     : 0.7797
+F1 macro (fair avg)    : 0.6794
+F1 weighted            : 0.7851
+
+Per-class precision / recall / F1:
+              precision    recall  f1-score   support
+
+     class_0       0.84      0.87      0.86     60865
+     class_1       0.65      0.73      0.69     41163
+     class_2       0.38      0.60      0.47     12945
+     class_3       0.76      0.77      0.76     84362
+     class_4       0.90      0.80      0.85    137596
+     class_5       0.45      0.46      0.45      8624
+
+    accuracy                           0.78    345555
+   macro avg       0.66      0.70      0.68    345555
+weighted avg       0.80      0.78      0.79    345555
